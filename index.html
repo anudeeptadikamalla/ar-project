@@ -4,85 +4,205 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+
     <title>AR Video Gift</title>
+
     <link rel="stylesheet" href="style.css" />
+
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
 </head>
 
 <body>
+
     <!-- Instructions overlay -->
     <div id="instructions" class="overlay">
+
         <h1>AR Video Gift</h1>
-        <p>📸 Point your camera at the target image to play the video</p>
+
+        <p>📸 Point your camera at the target image</p>
+
         <p id="loading-text">Loading AR...</p>
+
     </div>
 
-    <!-- Error message -->
+    <!-- Error Message -->
     <div id="error-msg" class="overlay error" style="display:none;">
-        <p>⚠️ Error loading video. Please refresh and try again.</p>
+
+        <p>⚠️ Error loading AR content.</p>
+
     </div>
 
-    <!-- Target found indicator -->
-    <div id="target-indicator" class="indicator">✓ Target Found</div>
+    <!-- Target Found Indicator -->
+    <div id="target-indicator" class="indicator">
 
-    <a-scene mindar-image="imageTargetSrc: ./assets/targets.mind;" color-space="sRGB" renderer="colorManagement: true;"
-        vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        ✓ Target Found
+
+    </div>
+
+    <div class="scan-frame"></div>
+
+    <!-- AR Scene -->
+    <a-scene id="scene" color-space="sRGB" renderer="colorManagement: true;" vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false">
 
         <a-assets timeout="10000">
-            <video id="video" src="./assets/video.mp4" preload="auto" loop playsinline webkit-playsinline
-                crossorigin="anonymous"></video>
+
+            <video id="video" preload="auto" loop muted playsinline webkit-playsinline crossorigin="anonymous"></video>
+
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <a-entity id="target" mindar-image-target="targetIndex: 0">
-            <a-video src="#video" position="0 0 0" width="1" height="0.6"></a-video>
+
+            <a-video id="video-plane" position="0 0 0" width="1" height="0.6"></a-video>
+
         </a-entity>
 
     </a-scene>
 
     <script>
+
+        // GET URL PARAM
+
+        const params = new URLSearchParams(window.location.search);
+
+        const gift = params.get("gift");
+
+
+
+        // ELEMENTS
+
+        const scene = document.querySelector("#scene");
+
         const target = document.querySelector("#target");
+
         const video = document.querySelector("#video");
+
+        const videoPlane = document.querySelector("#video-plane");
+
         const instructions = document.getElementById("instructions");
+
         const errorMsg = document.getElementById("error-msg");
+
         const indicator = document.getElementById("target-indicator");
+
         const loadingText = document.getElementById("loading-text");
 
-        // Hide instructions once AR scene loads
-        document.querySelector('a-scene').addEventListener('loaded', () => {
-            instructions.style.display = 'none';
+
+
+        // INVALID LINK HANDLING
+
+        if (!gift) {
+
+            errorMsg.style.display = "flex";
+
+            errorMsg.innerHTML = `
+            <p>⚠️ Gift link is invalid.</p>
+            <p>Please use a valid personalized link.</p>
+        `;
+
+            throw new Error("Missing gift parameter");
+
+        }
+
+
+
+        // PERSONALIZED LOADING TEXT
+
+        loadingText.innerText = `Loading ${gift}'s AR gift...`;
+
+
+
+        // DYNAMIC TARGET LOADING
+
+        scene.setAttribute(
+            "mindar-image",
+            `imageTargetSrc: ./assets/targets/${gift}.mind;`
+        );
+
+
+
+        // DYNAMIC VIDEO LOADING
+
+        video.src = `./assets/videos/${gift}.mp4`;
+
+        video.load();
+
+
+
+        // CONNECT VIDEO TO PLANE
+
+        videoPlane.setAttribute("src", "#video");
+
+
+
+        // SCENE LOADED
+
+        scene.addEventListener("loaded", () => {
+
+            instructions.style.display = "none";
+
         });
 
-        // Handle target found
+
+
+        // TARGET FOUND
+
         target.addEventListener("targetFound", () => {
-            indicator.classList.add('show');
+
+            indicator.classList.add("show");
+
             video.play().catch(err => {
-                console.error('Video play failed:', err);
-                errorMsg.style.display = 'flex';
+
+                console.error("Video Play Error:", err);
+
+                errorMsg.style.display = "flex";
+
             });
+
         });
 
-        // Handle target lost
+
+
+        // TARGET LOST
+
         target.addEventListener("targetLost", () => {
-            indicator.classList.remove('show');
+
+            indicator.classList.remove("show");
+
             video.pause();
+
         });
 
-        // Handle video errors
-        video.addEventListener('error', (e) => {
-            console.error('Video error:', e);
-            errorMsg.style.display = 'flex';
+
+
+        // VIDEO ERROR
+
+        video.addEventListener("error", (e) => {
+
+            console.error("Video Error:", e);
+
+            errorMsg.style.display = "flex";
+
         });
 
-        // Hide loading text when video starts
-        video.addEventListener('play', () => {
-            loadingText.style.display = 'none';
+
+
+        // VIDEO STARTED
+
+        video.addEventListener("play", () => {
+
+            loadingText.style.display = "none";
+
         });
+
     </script>
-
 </body>
 
 </html>
