@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <title>AR Gift Project</title>
-    <link rel="stylesheet" href="style.css?v=1.1" />
+    <link rel="stylesheet" href="style.css?v=1.2" />
 
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -22,7 +22,7 @@
         Waiting for system...
     </div>
 
-    <a-scene mindar-image="imageTargetSrc: ./assets/targets.mind?v=1.1;" color-space="sRGB"
+    <a-scene mindar-image="imageTargetSrc: ./assets/targets.mind?v=1.2;" color-space="sRGB"
         renderer="colorManagement: true;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
         <a-assets timeout="10000">
@@ -42,8 +42,9 @@
 
     </a-scene>
 
-    <script src="app.js?v=1.1"></script>
+    <script src="app.js?v=1.2"></script>
     <script>
+        // Connects console.log to the screen div
         const logDiv = document.querySelector('#debug-log');
         const oldLog = console.log;
         console.log = function (message) {

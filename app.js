@@ -1,17 +1,15 @@
-AFRAME.registerComponent('video-handler', {
+AFRAME.registerComponent('image-tracker', {
     init: function () {
-        console.log("Status: AR System Ready"); // Debugger will show this first
-        
-        const video = document.querySelector("#ar-video");
+        console.log("Status: AR Ready. Scan your card!");
 
+        // Triggered when the camera recognizes the card
         this.el.addEventListener('targetFound', event => {
-            console.log("Target Found: Playing Video"); // Dash will update to this
-            video.play();
+            console.log("Target Found! Showing overlay...");
         });
 
+        // Triggered when the card is moved away
         this.el.addEventListener('targetLost', event => {
-            console.log("Target Lost: Video Paused"); // Dash will update to this
-            video.pause();
+            console.log("Target Lost. Scanning...");
         });
     }
 });
