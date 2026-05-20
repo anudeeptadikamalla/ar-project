@@ -5,8 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <title>AR Gift Project</title>
-    <link rel="stylesheet" href="style.css?v=2" />
+    <title>AR Video Gift</title>
+
+    <link rel="stylesheet" href="style.css?v=2.1" />
 
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -18,25 +19,40 @@
 
 <body>
 
-    <a-scene mindar-image="imageTargetSrc: ./assets/targets.mind?v=2;" color-space="sRGB"
+    <a-scene mindar-image="imageTargetSrc: ./assets/targets.mind?v=2.1;" color-space="sRGB"
         renderer="colorManagement: true;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
         <a-assets timeout="10000">
 
-            <img id="overlay" src="./assets/overlay.jpg" />
+            <video id="video" src="./assets/video.mp4" preload="auto" loop muted playsinline webkit-playsinline
+                crossorigin="anonymous"></video>
 
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0">
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
 
-            <a-plane src="#overlay" position="0 0 0" width="1" height="0.6">
-            </a-plane>
+            <a-video src="#video" position="0 0 0" width="1" height="0.6"></a-video>
 
         </a-entity>
 
     </a-scene>
+
+    <script>
+
+        const target = document.querySelector("#target");
+        const video = document.querySelector("#video");
+
+        target.addEventListener("targetFound", () => {
+            video.play();
+        });
+
+        target.addEventListener("targetLost", () => {
+            video.pause();
+        });
+
+    </script>
 
 </body>
 
