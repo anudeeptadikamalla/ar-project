@@ -30,6 +30,24 @@
 
     </div>
 
+    <!-- Gift Name Input -->
+
+    <div id="name-screen" class="overlay">
+
+        <h1>🎁 Find Your Gift</h1>
+
+        <p>Enter your name to open your AR memory</p>
+
+        <input type="text" id="gift-input" placeholder="Enter your name">
+
+        <button id="gift-button">
+
+            Open Gift ✨
+
+        </button>
+
+    </div>
+
     <!-- Error Message -->
     <div id="error-msg" class="overlay error" style="display:none;">
 
@@ -98,18 +116,69 @@
 
         // INVALID LINK HANDLING
 
+        // VALID GIFTS
+
+        const validGifts = [
+            "rahul",
+            "andeep"
+        ];
+
+
+
+        // NAME SCREEN ELEMENTS
+
+        const nameScreen = document.getElementById("name-screen");
+
+        const giftInput = document.getElementById("gift-input");
+
+        const giftButton = document.getElementById("gift-button");
+
+
+
+        // IF NO GIFT PARAM
+
         if (!gift) {
 
-            errorMsg.style.display = "flex";
+            instructions.style.display = "none";
 
-            errorMsg.innerHTML = `
-            <p>⚠️ Gift link is invalid.</p>
-            <p>Please use a valid personalized link.</p>
-        `;
+            nameScreen.style.display = "flex";
 
-            throw new Error("Missing gift parameter");
+
+
+            giftButton.addEventListener("click", () => {
+
+                const enteredName = giftInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+
+                if (validGifts.includes(enteredName)) {
+
+                    window.location.href =
+                        `?gift=${enteredName}`;
+
+                }
+
+                else {
+
+                    alert("Gift not found!");
+
+                }
+
+            });
+
+
+
+            throw new Error("Waiting for user input");
 
         }
+
+
+
+        // HIDE NAME SCREEN IF GIFT EXISTS
+
+        nameScreen.style.display = "none";
 
 
 
