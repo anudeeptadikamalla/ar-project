@@ -106,6 +106,8 @@
 
         const instructions = document.getElementById("instructions");
 
+        const scanFrame = document.querySelector(".scan-frame");
+
         // const errorMsg = document.getElementById("error-msg");
 
         // const indicator = document.getElementById("target-indicator");
@@ -229,6 +231,7 @@
         target.addEventListener("targetFound", () => {
 
             // indicator.classList.add("show");
+            scanFrame.classList.add("hidden");
 
             video.play().catch(err => {
 
@@ -247,7 +250,7 @@
         target.addEventListener("targetLost", () => {
 
             // indicator.classList.remove("show");
-
+            scanFrame.classList.remove("hidden");
             video.pause();
 
         });
@@ -271,6 +274,7 @@
         video.addEventListener("play", () => {
 
             loadingText.style.display = "none";
+            scanFrame.classList.add("hidden");
 
         });
 
