@@ -30,7 +30,6 @@
 
     </div>
 
-
     <!-- Gift Name Input -->
 
     <div id="name-screen" class="overlay">
@@ -49,17 +48,23 @@
 
     </div>
 
+    <!-- Error Message -->
+    <!-- <div id="error-msg" class="overlay error" style="display:none;">
 
-    <!-- Developer Console -->
+        <p>⚠️ Error loading AR content.</p>
 
-    <div id="debug-console"></div>
+    </div> -->
 
+    <!-- Target Found Indicator -->
+    <!-- <div id="target-indicator" class="indicator">
+
+        ✓ Target Found
+
+    </div> -->
 
     <div class="scan-frame"></div>
 
-
     <!-- AR Scene -->
-
     <a-scene id="scene" color-space="sRGB" renderer="colorManagement: true;" vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false">
 
@@ -69,9 +74,7 @@
 
         </a-assets>
 
-
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
 
         <a-entity id="target" mindar-image-target="targetIndex: 0">
 
@@ -81,76 +84,17 @@
 
     </a-scene>
 
-
     <script>
 
-        /* =====================================================
-           URL PARAMETERS
-        ===================================================== */
+        // GET URL PARAM
 
         const params = new URLSearchParams(window.location.search);
 
         const gift = params.get("gift");
 
-        const debugMode = params.get("debug") === "true";
 
 
-        /* =====================================================
-           DEVELOPER LOGGER
-        ===================================================== */
-
-        const debugConsole = document.getElementById("debug-console");
-
-
-        function log(message) {
-
-            console.log(message);
-
-            if (!debugMode) {
-                return;
-            }
-
-            const time = new Date().toLocaleTimeString();
-
-            const line = document.createElement("div");
-
-            line.textContent = `[${time}] ${message}`;
-
-            debugConsole.appendChild(line);
-
-            debugConsole.scrollTop = debugConsole.scrollHeight;
-
-        }
-
-
-        /* =====================================================
-           GLOBAL ERROR LOGGING
-        ===================================================== */
-
-        window.addEventListener("error", (event) => {
-
-            log(`❌ JS ERROR: ${event.message}`);
-
-        });
-
-
-        window.addEventListener("unhandledrejection", (event) => {
-
-            log(`❌ PROMISE ERROR: ${event.reason}`);
-
-        });
-
-
-        log("🚀 AR Gift application started");
-
-        log(`Gift parameter: ${gift || "none"}`);
-
-        log(`Debug mode: ${debugMode}`);
-
-
-        /* =====================================================
-           ELEMENTS
-        ===================================================== */
+        // ELEMENTS
 
         const scene = document.querySelector("#scene");
 
@@ -162,18 +106,17 @@
 
         const instructions = document.getElementById("instructions");
 
+        // const errorMsg = document.getElementById("error-msg");
+
+        // const indicator = document.getElementById("target-indicator");
+
         const loadingText = document.getElementById("loading-text");
 
-        const nameScreen = document.getElementById("name-screen");
-
-        const giftInput = document.getElementById("gift-input");
-
-        const giftButton = document.getElementById("gift-button");
 
 
-        /* =====================================================
-           VALID GIFTS
-        ===================================================== */
+        // INVALID LINK HANDLING
+
+        // VALID GIFTS
 
         const validGifts = [
             "rahul",
@@ -184,20 +127,25 @@
         ];
 
 
-        log(`Valid gifts loaded: ${validGifts.length}`);
+
+        // NAME SCREEN ELEMENTS
+
+        const nameScreen = document.getElementById("name-screen");
+
+        const giftInput = document.getElementById("gift-input");
+
+        const giftButton = document.getElementById("gift-button");
 
 
-        /* =====================================================
-           NO GIFT PARAMETER
-        ===================================================== */
+
+        // IF NO GIFT PARAM
 
         if (!gift) {
-
-            log("ℹ️ No gift parameter found");
 
             instructions.style.display = "none";
 
             nameScreen.style.display = "flex";
+
 
 
             giftButton.addEventListener("click", () => {
@@ -207,12 +155,8 @@
                     .toLowerCase();
 
 
-                log(`👤 Name entered: ${enteredName}`);
-
 
                 if (validGifts.includes(enteredName)) {
-
-                    log(`✅ Gift found: ${enteredName}`);
 
                     window.location.href =
                         `?gift=${enteredName}`;
@@ -221,8 +165,6 @@
 
                 else {
 
-                    log(`❌ Gift not found: ${enteredName}`);
-
                     alert("Gift not found!");
 
                 }
@@ -230,242 +172,109 @@
             });
 
 
-            log("⏸ Waiting for user to enter gift name");
 
             throw new Error("Waiting for user input");
 
         }
 
 
-        /* =====================================================
-           HIDE NAME SCREEN
-        ===================================================== */
+
+        // HIDE NAME SCREEN IF GIFT EXISTS
 
         nameScreen.style.display = "none";
 
 
-        /* =====================================================
-           PERSONALIZED LOADING TEXT
-        ===================================================== */
 
-        loadingText.innerText =
-            `Loading ${gift}'s Surprise...`;
+        // PERSONALIZED LOADING TEXT
+
+        loadingText.innerText = `Loading ${gift}'s Surprise...`;
 
 
-        log(`🎁 Loading gift: ${gift}`);
 
-
-        /* =====================================================
-           DYNAMIC TARGET LOADING
-        ===================================================== */
-
-        const targetPath =
-            `./assets/targets/${gift}.mind`;
-
-
-        log(`🎯 Target file: ${targetPath}`);
-
+        // DYNAMIC TARGET LOADING
 
         scene.setAttribute(
             "mindar-image",
-            `imageTargetSrc: ${targetPath};`
+            `imageTargetSrc: ./assets/targets/${gift}.mind;`
         );
 
 
-        /* =====================================================
-           DYNAMIC VIDEO LOADING
-        ===================================================== */
 
-        const videoPath =
-            `./assets/videos/${gift}.mp4`;
+        // DYNAMIC VIDEO LOADING
 
-
-        log(`🎥 Video file: ${videoPath}`);
-
-
-        video.src = videoPath;
+        video.src = `./assets/videos/${gift}.mp4`;
 
         video.load();
 
 
-        log("🎥 Video load requested");
 
-
-        /* =====================================================
-           CONNECT VIDEO TO AR PLANE
-        ===================================================== */
+        // CONNECT VIDEO TO PLANE
 
         videoPlane.setAttribute("src", "#video");
 
 
-        log("🖼️ Video connected to AR plane");
 
-
-        /* =====================================================
-           SCENE LOADED
-        ===================================================== */
+        // SCENE LOADED
 
         scene.addEventListener("loaded", () => {
-
-            log("✅ A-Frame scene loaded");
 
             instructions.style.display = "none";
 
         });
 
 
-        /* =====================================================
-           TARGET FOUND
-        ===================================================== */
+
+        // TARGET FOUND
 
         target.addEventListener("targetFound", () => {
 
-            log("🎯 Target FOUND");
+            // indicator.classList.add("show");
 
-            log("▶ Attempting to play video");
+            video.play().catch(err => {
 
+                console.error("Video Play Error:", err);
 
-            video.play()
-                .then(() => {
+                // errorMsg.style.display = "flex";
 
-                    log("▶️ Video is playing");
-
-                })
-                .catch(err => {
-
-                    log(`❌ Video play failed: ${err.message}`);
-
-                    console.error(
-                        "Video Play Error:",
-                        err
-                    );
-
-                });
+            });
 
         });
 
 
-        /* =====================================================
-           TARGET LOST
-        ===================================================== */
+
+        // TARGET LOST
 
         target.addEventListener("targetLost", () => {
 
-            log("❌ Target LOST");
+            // indicator.classList.remove("show");
 
             video.pause();
 
-            log("⏸️ Video paused");
+        });
+
+
+
+        // VIDEO ERROR
+
+        video.addEventListener("error", (e) => {
+
+            console.error("Video Error:", e);
+
+            // errorMsg.style.display = "flex";
 
         });
 
 
-        /* =====================================================
-           VIDEO EVENTS
-        ===================================================== */
 
-        video.addEventListener("loadstart", () => {
-
-            log("📥 Video loading started");
-
-        });
-
-
-        video.addEventListener("loadedmetadata", () => {
-
-            log(
-                `ℹ️ Video metadata loaded: ${video.videoWidth}x${video.videoHeight}`
-            );
-
-        });
-
-
-        video.addEventListener("canplay", () => {
-
-            log("✅ Video can play");
-
-        });
-
+        // VIDEO STARTED
 
         video.addEventListener("play", () => {
-
-            log("▶️ Video PLAY event");
 
             loadingText.style.display = "none";
 
         });
 
-
-        video.addEventListener("pause", () => {
-
-            log("⏸️ Video PAUSE event");
-
-        });
-
-
-        video.addEventListener("ended", () => {
-
-            log("🏁 Video ended");
-
-        });
-
-
-        /* =====================================================
-           VIDEO ERROR
-        ===================================================== */
-
-        video.addEventListener("error", (e) => {
-
-            const mediaError = video.error;
-
-            if (mediaError) {
-
-                log(
-                    `❌ Video error: code ${mediaError.code}`
-                );
-
-            }
-            else {
-
-                log("❌ Unknown video error");
-
-            }
-
-            console.error(
-                "Video Error:",
-                e
-            );
-
-        });
-
-
-        /* =====================================================
-           AR LOADING EVENTS
-        ===================================================== */
-
-        scene.addEventListener("arReady", () => {
-
-            log("📷 AR system READY");
-
-        });
-
-
-        scene.addEventListener("arError", (event) => {
-
-            log("❌ AR system ERROR");
-
-            console.error(
-                "AR Error:",
-                event
-            );
-
-        });
-
-
-        log("⏳ Waiting for AR initialization...");
-
     </script>
-
 </body>
 
 </html>
