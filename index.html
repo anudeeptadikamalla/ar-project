@@ -49,18 +49,18 @@
     </div>
 
     <!-- Error Message -->
-    <div id="error-msg" class="overlay error" style="display:none;">
+    <!-- <div id="error-msg" class="overlay error" style="display:none;">
 
         <p>⚠️ Error loading AR content.</p>
 
-    </div>
+    </div> -->
 
     <!-- Target Found Indicator -->
-    <div id="target-indicator" class="indicator">
+    <!-- <div id="target-indicator" class="indicator">
 
         ✓ Target Found
 
-    </div>
+    </div> -->
 
     <div class="scan-frame"></div>
 
@@ -106,9 +106,9 @@
 
         const instructions = document.getElementById("instructions");
 
-        const errorMsg = document.getElementById("error-msg");
+        // const errorMsg = document.getElementById("error-msg");
 
-        const indicator = document.getElementById("target-indicator");
+        // const indicator = document.getElementById("target-indicator");
 
         const loadingText = document.getElementById("loading-text");
 
@@ -121,8 +121,9 @@
         const validGifts = [
             "rahul",
             "anudeep",
-            "c1",
-            "c2"
+            "deeksha",
+            "ramya",
+            "sowmya"
         ];
 
 
@@ -186,7 +187,7 @@
 
         // PERSONALIZED LOADING TEXT
 
-        loadingText.innerText = `Loading ${gift}'s AR gift...`;
+        loadingText.innerText = `Loading ${gift}'s Surprise...`;
 
 
 
@@ -227,13 +228,13 @@
 
         target.addEventListener("targetFound", () => {
 
-            indicator.classList.add("show");
+            // indicator.classList.add("show");
 
             video.play().catch(err => {
 
                 console.error("Video Play Error:", err);
 
-                errorMsg.style.display = "flex";
+                // errorMsg.style.display = "flex";
 
             });
 
@@ -245,7 +246,7 @@
 
         target.addEventListener("targetLost", () => {
 
-            indicator.classList.remove("show");
+            // indicator.classList.remove("show");
 
             video.pause();
 
@@ -259,7 +260,7 @@
 
             console.error("Video Error:", e);
 
-            errorMsg.style.display = "flex";
+            // errorMsg.style.display = "flex";
 
         });
 
